@@ -13,7 +13,9 @@ public class PersonRepositoryImpl implements PersonRepository {
 
     @Override
     public Mono<Person> getById(Integer id) {
-        return Mono.just(michael);
+        return findAll().single().filter(person -> {
+            return person.getId() == id;
+        }).onErrorReturn(Person.builder().build());
     }
 
     @Override

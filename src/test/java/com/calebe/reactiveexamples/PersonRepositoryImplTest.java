@@ -121,4 +121,22 @@ class PersonRepositoryImplTest {
             System.out.println(person.toString());
         });
     }
+
+    @Test
+    void testFindByIdWithImplementation() {
+        Mono<Person> personMono = personRepository.getById(1);
+
+        personMono.subscribe(person -> {
+            System.out.println(person);
+        });
+    }
+
+    @Test
+    void testFindByIdWithImplementationNotFound() {
+        Mono<Person> personMono = personRepository.getById(6);
+
+        personMono.subscribe(person -> {
+            System.out.println(person);
+        });
+    }
 }
