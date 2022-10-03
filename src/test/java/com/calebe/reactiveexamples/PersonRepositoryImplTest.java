@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -26,11 +27,24 @@ class PersonRepositoryImplTest {
         System.out.println(person.toString());
     }
     @Test
-    void getByIdSubscribe() {
+    void testGetByIdSubscribe() {
         Mono<Person> personMono = personRepository.getById(1);
+
+        StepVerifier.create(personMono).expectNextCount(1).verifyComplete();
 
         personMono.subscribe(person -> {
             System.out.println(person.toString());
+        });
+    }
+
+    @Test
+    void testGetByIdWithImplementationNotFound() {
+        Mono<Person> personMono = personRepository.getById(6);
+
+        StepVerifier.create(personMono).expectNextCount(1).verifyComplete();
+
+        personMono.subscribe(person -> {
+            System.out.println(person);
         });
     }
     @Test
@@ -56,6 +70,8 @@ class PersonRepositoryImplTest {
     @Test
     void fluxTestSubscribe() {
         Flux<Person> personFlux = personRepository.findAll();
+
+        StepVerifier.create(personFlux).expectNextCount(4).verifyComplete();
 
         personFlux.subscribe(person -> {
             System.out.println(person.toString());
@@ -122,21 +138,5 @@ class PersonRepositoryImplTest {
         });
     }
 
-    @Test
-    void testFindByIdWithImplementation() {
-        Mono<Person> personMono = personRepository.getById(1);
 
-        personMono.subscribe(person -> {
-            System.out.println(person);
-        });
-    }
-
-    @Test
-    void testFindByIdWithImplementationNotFound() {
-        Mono<Person> personMono = personRepository.getById(6);
-
-        personMono.subscribe(person -> {
-            System.out.println(person);
-        });
-    }
 }
